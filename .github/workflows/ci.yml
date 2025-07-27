@@ -70,7 +70,7 @@ jobs:
       - name: Run Linter
         run: |
           echo "View the contents of the current directory:"
-          ls -la venv
+          ls -la venv/bin
           echo "Running linter..."
           make lint
 
