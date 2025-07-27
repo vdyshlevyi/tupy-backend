@@ -26,17 +26,17 @@ setup: venv/bin/activate ## Project setup
 	venv/bin/poetry install
 
 
-run: venv/bin/activate ## Run project
+run: ## Run project
 	venv/bin/python entry.py
 
 
-lint: venv/bin/activate ## Run linter
+lint: ## Run linter
 	venv/bin/ruff format --config ./pyproject.toml . && venv/bin/ruff check --fix --config ./pyproject.toml .
 
-mypy: venv/bin/activate ## Run mypy
+mypy: ## Run mypy
 	venv/bin/mypy ./
 
-coverage: venv/bin/activate ## Run tests coverage
+coverage: ## Run tests coverage
 	venv/bin/coverage run --source="app" --omit=*/__init__.py -m pytest -vv
 	venv/bin/coverage xml
 	venv/bin/coverage report -m --fail-under=80.00
