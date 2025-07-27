@@ -21,25 +21,25 @@ venv/bin/activate: ## Alias for virtual environment
 	python -m venv venv
 
 setup: venv/bin/activate ## Project setup
-	. venv/bin/activate; pip install --upgrade pip
-	. venv/bin/activate; pip install poetry
-	. venv/bin/activate; poetry install
+	venv/bin/pip install --upgrade pip
+	venv/bin/pip install poetry
+	venv/bin/poetry install
 
 
 run: venv/bin/activate ## Run project
-	. venv/bin/activate; python entry.py
+	venv/bin/python entry.py
 
 
-lint: ## Run linter
-	. venv/bin/activate; ruff format --config ./pyproject.toml . && ruff check --fix --config ./pyproject.toml .
+lint: venv/bin/activate ## Run linter
+	venv/bin/ruff format --config ./pyproject.toml . && venv/bin/ruff check --fix --config ./pyproject.toml .
 
 mypy: venv/bin/activate ## Run mypy
-	. venv/bin/activate; mypy ./
+	venv/bin/mypy ./
 
-coverage: ## Run tests coverage
-	. venv/bin/activate; coverage run --source="app" --omit=*/__init__.py -m pytest -vv
-	. venv/bin/activate; coverage xml
-	. venv/bin/activate; coverage report -m --fail-under=80.00
+coverage: venv/bin/activate ## Run tests coverage
+	venv/bin/coverage run --source="app" --omit=*/__init__.py -m pytest -vv
+	venv/bin/coverage xml
+	venv/bin/coverage report -m --fail-under=80.00
 
 
 
