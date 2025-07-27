@@ -34,7 +34,6 @@ jobs:
 
       - name: Create and install to virtualenv
         run: |
-          echo "Creating virtual environment..."
           make setup
 
       - name: Save updated virtualenv cache
@@ -69,9 +68,6 @@ jobs:
 
       - name: Run Linter
         run: |
-          echo "View the contents of the current directory:"
-          ls -la venv/bin
-          echo "Running linter..."
           make lint
 
   mypy:
@@ -99,5 +95,4 @@ jobs:
 
       - name: Run Mypy
         run: |
-          echo "Running mypy..."
           make mypy
