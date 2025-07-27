@@ -19,6 +19,7 @@
 
 venv/bin/activate: ## Alias for virtual environment
 	python -m venv venv
+	export POETRY_VIRTUALENVS_PATH=./venv
 
 setup: venv/bin/activate ## Project setup
 	venv/bin/pip install --upgrade pip

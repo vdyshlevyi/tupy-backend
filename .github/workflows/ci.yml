@@ -35,7 +35,7 @@ jobs:
       - name: Create and install to virtualenv
         run: |
           echo "View the contents of the current directory:"
-          ls -la venv/bin
+          ls -la 
           echo "Creating virtual environment..."
           make setup
           echo "After setup, view the contents of the venv directory:"
