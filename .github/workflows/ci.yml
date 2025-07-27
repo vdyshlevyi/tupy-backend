@@ -39,6 +39,7 @@ jobs:
           echo "Creating virtual environment..."
           make setup
           echo "After setup, view the contents of the venv directory:"
+          ls -la 
           ls -la venv/bin
 
       - name: Save updated virtualenv cache
