@@ -34,9 +34,11 @@ jobs:
       - name: Create and install to virtualenv
         run: |
           echo "View the contents of the current directory:"
-          ls -la
+          ls -la venv/bin
           echo "Creating virtual environment..."
           make setup
+          echo "After setup, view the contents of the venv directory:"
+          ls -la venv/bin
 
       - name: Save updated virtualenv cache
         if: steps.cache-venv.outputs.cache-hit != 'true'
