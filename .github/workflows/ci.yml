@@ -25,7 +25,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: venv
-          key: venv-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          key: venv-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('pyproject.toml') }}
           restore-keys: |
             venv-${{ runner.os }}-
 
@@ -34,20 +34,14 @@ jobs:
 
       - name: Create and install to virtualenv
         run: |
-          echo "View the contents of the current directory:"
-          ls -la 
-          echo "Creating virtual environment..."
           make setup
-          echo "After setup, view the contents of the venv directory:"
-          ls -la 
-          ls -la venv/bin
 
       - name: Save updated virtualenv cache
         if: steps.cache-venv.outputs.cache-hit != 'true'
         uses: actions/cache@v4
         with:
           path: venv
-          key: venv-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          key: venv-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('pyproject.toml') }}
 
   lint:
     name: Run Linter
@@ -55,6 +49,7 @@ jobs:
     needs: setup
     env:
       VENV_PATH: ${{ github.workspace }}/venv/bin
+      POETRY_VIRTUALENVS_PATH: ${{ github.workspace }}/venv
     steps:
       - uses: actions/checkout@v4
 
@@ -67,15 +62,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: venv
-          key: venv-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          key: venv-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('pyproject.toml') }}
           restore-keys: |
-            venv-${{ runner.os }}-
+            venv-${{ runner.os }}-${{ github.ref_name }}-
 
       - name: Run Linter
         run: |
-          echo "View the contents of the current directory:"
-          ls -la venv/bin
-          echo "Running linter..."
           make lint
 
   mypy:
@@ -84,6 +76,7 @@ jobs:
     needs: setup
     env:
       VENV_PATH: ${{ github.workspace }}/venv/bin
+      POETRY_VIRTUALENVS_PATH: ${{ github.workspace }}/venv
     steps:
       - uses: actions/checkout@v4
 
@@ -96,15 +89,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: venv
-          key: venv-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          key: venv-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('pyproject.toml') }}
           restore-keys: |
-            venv-${{ runner.os }}-
+            venv-${{ runner.os }}-${{ github.ref_name }}-
 
       - name: Run Mypy
         run: |
-          echo "View the contents of the current directory:"
-          ls -la venv
-          echo "View environment variables:"
-          export -p
-          echo "Running mypy..."
           make mypy
