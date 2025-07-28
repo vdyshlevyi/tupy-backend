@@ -45,8 +45,22 @@ make mypy
 ```
 
 ---
+## Docker
+### Build Docker image:
+```bash
+docker build --no-cache -t tupy_backend:0.1.0 .
+```
+
+### Check that image was created:
+```bash
+docker image ls | grep tupy_backend
+```
+
+
 ## Quick start via Docker Compose
 ### Just start project with dependencies using one command:
 ```bash
-docker-compose up --build  # TODO(Valerii Dyshlevyi): add docker-compose.yaml file
+docker-compose up --build
+# or run as daemon
+docker-compose up --build -d
 ```

@@ -1,35 +1,48 @@
-FROM python:3.13-alpine3.20
+# ========================
+# Stage 1: Build dependencies
+# ========================
+FROM python:3.13-alpine3.20 AS builder
 
-# Set environment
 ENV APP_HOME=/app
 WORKDIR $APP_HOME
 
-# Install build dependencies
+# Install build tools needed for compiling packages
 RUN apk add --no-cache curl git gcc musl-dev libffi-dev
 
-# Install Poetry (latest version)
+# Install Poetry
 ENV POETRY_VERSION=2.1.3
 RUN curl -sSL https://install.python-poetry.org | python3 - \
   && ln -s /root/.local/bin/poetry /usr/local/bin/poetry
 
-# Copy pyproject + lock first to leverage Docker cache
-COPY pyproject.toml poetry.lock* ./
-
-# Configure Poetry to not use a virtualenv
+# Disable Poetry venv
 ENV POETRY_VIRTUALENVS_CREATE=false
 
-# Install dependencies via Poetry
+# Copy only dependency files
+COPY pyproject.toml poetry.lock* ./
+
+# Install dependencies (into app dir)
 RUN poetry install --no-root --no-interaction --no-ansi
 
-# Copy the rest of your app
+# ========================
+# Stage 2: Runtime image
+# ========================
+FROM python:3.13-alpine3.20 AS runtime
+
+ENV APP_HOME=/app
+WORKDIR $APP_HOME
+
+# Install runtime deps only (no compiler, no curl)
+RUN apk add --no-cache libffi
+
+# Copy only installed packages and app code from builder
+COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Copy app code
 COPY . .
 
-# Expose the port (adjust if needed)
-EXPOSE 9000
-
-# Set execute permissions for entrypoint.sh
+# Permissions (if needed)
 RUN chmod +x /app/entrypoint.sh
 
-# Define the entrypoint
+EXPOSE 9000
 ENTRYPOINT ["/app/entrypoint.sh"]
-
