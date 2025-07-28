@@ -37,11 +37,34 @@ lint: ## Run linter
 mypy: ## Run mypy
 	. venv/bin/activate; mypy ./
 
+test: ## Run tests check
+	poetry run pytest $(filter-out $@,$(MAKECMDGOALS)) -s
+
+test-unit: ## Run unit tests
+	poetry run pytest $(filter-out $@,$(MAKECMDGOALS)) -s -k "unit"
+
+test-integration: ## Run integration tests
+	poetry run pytest $(filter-out $@,$(MAKECMDGOALS)) -s -k "integration"
+
 coverage: ## Run tests coverage
 	. venv/bin/activate; coverage run --source="app" --omit=*/__init__.py -m pytest -vv
 	. venv/bin/activate; coverage xml
 	. venv/bin/activate; coverage report -m --fail-under=80.00
 
+
+# Migration commands
+db-upgrade: ## Apply migrations
+	. venv/bin/activate; alembic upgrade head
+db-current: ## Current migration
+	. venv/bin/activate; alembic current
+db-revision: ## Create new db revision
+	. venv/bin/activate; alembic revision --autogenerate -m "$(filter-out $@,$(MAKECMDGOALS))"
+db-show: ## Show migrations
+	. venv/bin/activate; alembic show head
+db-history: ## Show all migrations
+	. venv/bin/activate; alembic history
+db-downgrade: ## Downgrade db to -1 migration
+	. venv/bin/activate; alembic downgrade -1
 
 
 # Just help
