@@ -7,14 +7,12 @@ from starlette import status
 from app.api.authentication.dependencies import (
     generate_access_token,
     get_password_hash,
-    get_request_user,
     verify_password,
 )
 from app.api.authentication.schemas import (
     LoginSchema,
     LoginSuccessSchema,
     SignUpSchema,
-    ViewProfileSchema,
 )
 from app.api.exceptions import APIValidationError, ConflictError
 from app.containers import Container
