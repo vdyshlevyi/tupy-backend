@@ -20,6 +20,7 @@ services:
       POSTGRES_DB: tupy_backend
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      DATABASE_URI: "postgresql+asyncpg://postgres:postgres@db:5432/tupy_backend"
       HOST: 0.0.0.0
       PORT: 9000
       DEBUG: "true"
