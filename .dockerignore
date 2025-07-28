@@ -15,3 +15,7 @@ coverage.xml
 Makefile
 README.md
 docker-compose.yaml
+.github
+.vscode
+.env_example
+Dockerfile

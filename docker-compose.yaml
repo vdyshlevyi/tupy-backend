@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:16.4-alpine3.20
+    environment:
+      POSTGRES_DB: tupy_backend
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "8000:5432"  # Maps host:8000 → container:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  api:
+    build: .
+    depends_on:
+      - db
+    environment:
+      POSTGRES_DB: tupy_backend
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      HOST: 0.0.0.0
+      PORT: 9000
+      DEBUG: "true"
+      SECRET_KEY: "very_secret_key"
+    ports:
+      - "9000:9000"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:9000/healthcheck"]
+      interval: 10s
+      timeout: 10s
+      start_period: 10s
+      retries: 3
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
