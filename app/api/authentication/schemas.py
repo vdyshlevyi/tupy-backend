@@ -19,12 +19,6 @@ class RequestEmail(BaseSchema):
     email: EmailStr
 
 
-class InfoSchema(BaseSchema):
-    """Schema for sign up success response."""
-
-    message: str
-
-
 class LoginSchema(BaseSchema):
     """Schema for login validation."""
 

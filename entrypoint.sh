@@ -2,6 +2,6 @@
 
 set -o errexit
 
-# alembic upgrade head   # TODO(Valerii Dyshlevyi): add mirations in future
+alembic upgrade head
 
 python entry.py

@@ -10,4 +10,3 @@ class ViewProfileSchema(BaseSchema):
     email: EmailStr
     first_name: str
     last_name: str
-    avatar: str | None = None
