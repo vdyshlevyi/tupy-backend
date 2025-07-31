@@ -1,12 +1,10 @@
 from datetime import datetime
 from uuid import UUID
 
-from dependency_injector.wiring import Provide, inject
 from factory.base import StubFactory
 from factory.declarations import LazyFunction
 from faker import Faker
 
-from app.containers import Container
 from app.domain.users import User
 from app.uow.unit_of_work import UnitOfWork
 
@@ -30,23 +28,17 @@ class BaseFactory(StubFactory):
         return data
 
     @classmethod
-    @inject
-    async def create_(  # noqa: ANN206
-        cls,
-        unit_of_work: UnitOfWork = Provide[Container.unit_of_work],
-        **kwargs,
-    ):
+    async def create_(cls, uow: UnitOfWork, **kwargs) -> User:
         """Async version of create method."""
         fields = cls.build_dict(**kwargs)
         for key, value in fields.items():
             if isinstance(value, datetime):
                 fields[key] = value.replace(tzinfo=None)
 
-        async with unit_of_work as uow:
-            obj = cls._meta.model(**fields)
-            uow.session.add(obj)
-            await uow.session.commit()
-            await uow.session.refresh(obj)
+        obj = cls._meta.model(**fields)
+        uow.session.add(obj)
+        await uow.session.commit()
+        await uow.session.refresh(obj)
         return obj
 
 

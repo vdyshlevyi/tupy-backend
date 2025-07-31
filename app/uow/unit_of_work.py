@@ -5,8 +5,8 @@ from sqlalchemy import Executable, Result
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.db.database import AsyncSQLAlchemy
 from app.domain import User
-from app.uow.connection import AsyncSQLAlchemy
 from app.uow.user.repository import UserRepository
 
 
@@ -29,9 +29,6 @@ class UnitOfWork:
 
     async def commit(self) -> None:
         await self.session.commit()
-
-    async def rollback(self) -> None:
-        await self.session.rollback()
 
     async def execute(self, query: Executable) -> Result[Any]:
         return await self.session.execute(query)

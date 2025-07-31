@@ -16,8 +16,3 @@ class Settings(BaseSettings):
     DATABASE_URI: str = "postgresql+asyncpg://test:test@localhost:5432/test_db"
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
-
-
-# @lru_cache
-def get_settings() -> Settings:
-    return Settings()  # type: ignore[call-arg]

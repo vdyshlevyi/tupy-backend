@@ -2,12 +2,10 @@ from pathlib import Path
 from urllib.parse import urlparse, urlunparse
 
 import pytest
-from dependency_injector.providers import Singleton
 from pydantic import computed_field
 from pydantic_settings import SettingsConfigDict
 
 from app.config import Settings
-from app.containers import Container
 
 
 class TestSettings(Settings):
@@ -36,21 +34,12 @@ class TestSettings(Settings):
         return urlunparse((parsed.scheme, netloc, path, "", "", ""))
 
 
-@pytest.fixture(scope="session", autouse=True)
-def setup_container():
-    container = Container()
-    # Override staff here
-    test_settings = Singleton(TestSettings)
-    container.settings.override(test_settings)
-    container.wire(packages=["app", "tests"])
-    return container
-
-
 @pytest.fixture(scope="session")
 def anyio_backend() -> str:
     return "asyncio"
 
 
-@pytest.fixture(scope="session")
-def test_settings(setup_container) -> TestSettings:
-    return setup_container.settings()
+@pytest.fixture(scope="session", autouse=False)
+def test_settings() -> TestSettings:
+    """Settings for tests."""
+    return TestSettings()
