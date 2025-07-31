@@ -3,7 +3,7 @@ from logging import getLogger
 from fastapi import APIRouter, Depends
 from starlette import status
 
-from app.api.authentication.dependencies import get_request_user
+from app.api.authentication.utils import get_request_user
 from app.api.users.schemas import ViewProfileSchema
 from app.domain import User
 

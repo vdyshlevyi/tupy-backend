@@ -3,11 +3,8 @@ source = app
 omit =
     */__init__.py
     tests/*
-branch = true
 
 [report]
 show_missing = true
 skip_covered = true
 fail_under = 80.0
-# Specify XML report output
-xml = coverage.xml

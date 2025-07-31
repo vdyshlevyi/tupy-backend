@@ -2,16 +2,14 @@ import pytest
 from httpx import AsyncClient
 from starlette import status
 
-from app.api.authentication.dependencies import get_password_hash
-from tests.conftest import TestSettings
+from app.api.authentication.utils import get_password_hash
+from app.uow.unit_of_work import UnitOfWork
 from tests.constants import Urls
 from tests.factories import UserFactory
 
 
 @pytest.mark.anyio
-async def test_login_invalid_credentials(
-    test_settings: TestSettings, unauthenticated_client: AsyncClient
-) -> None:
+async def test_login_invalid_credentials(unauthenticated_client: AsyncClient) -> None:
     response = await unauthenticated_client.post(
         url=Urls.Auth.LOGIN,
         json={
@@ -25,11 +23,9 @@ async def test_login_invalid_credentials(
 
 
 @pytest.mark.anyio
-async def test_login_success(
-    test_settings: TestSettings, unauthenticated_client: AsyncClient
-) -> None:
+async def test_login_success(unauthenticated_client: AsyncClient, test_uow: UnitOfWork) -> None:
     hashed_password = get_password_hash("123456")
-    user = await UserFactory.create_(hashed_password=hashed_password)
+    user = await UserFactory.create_(uow=test_uow, hashed_password=hashed_password)
     # 1. Send invalid credentials
     user_data = {"email": user.email, "password": "wrongpassword"}
     response = await unauthenticated_client.post(url=Urls.Auth.LOGIN, json=user_data)

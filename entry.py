@@ -2,14 +2,14 @@
 
 import uvicorn
 
-from app.config import Settings
+from app.dependencies.settings import get_settings
 
-settings = Settings()  # type: ignore[call-arg]
+settings = get_settings()
 
 
 def main():
     uvicorn.run(
-        app="app.app:app",
+        app="app.main:fastapi_app",
         host=settings.HOST,
         port=settings.PORT,
         reload=settings.DEBUG,
