@@ -124,6 +124,7 @@ jobs:
       - name: Run Test Coverage and Extract %
         id: coverage
         run: |
+          ls venv/bin
           make coverage
           COVERAGE_LINE=$(coverage report | grep TOTAL)
           echo "$COVERAGE_LINE"
