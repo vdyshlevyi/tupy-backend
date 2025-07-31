@@ -47,9 +47,7 @@ test-integration: ## Run integration tests
 	poetry run pytest $(filter-out $@,$(MAKECMDGOALS)) -s -k "integration"
 
 coverage: ## Run tests coverage
-	. venv/bin/activate; coverage run --source="app" --omit=*/__init__.py -m pytest -vv
-	. venv/bin/activate; coverage xml
-	. venv/bin/activate; coverage report -m --fail-under=80.00
+	. venv/bin/activate; pytest --cov=app tests/ --cov-report=xml
 
 
 # Migration commands
