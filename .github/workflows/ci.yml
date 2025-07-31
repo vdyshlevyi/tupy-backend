@@ -125,7 +125,7 @@ jobs:
         id: coverage
         run: |
           make coverage
-          COVERAGE_LINE=$(./venv/bin/coverage report | grep TOTAL)
+          COVERAGE_LINE=$(venv/bin/coverage report | grep TOTAL)
           echo "Parsed output from coverage is $COVERAGE_LINE"
           PERCENT=$(echo "$COVERAGE_LINE" | awk '{print $NF}' | tr -d '%')
           echo "Coverage percentage: $PERCENT"
@@ -140,4 +140,10 @@ jobs:
           else
             echo "Coverage is above 80%, passing the job."
           fi
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}  # optional for public repos
           

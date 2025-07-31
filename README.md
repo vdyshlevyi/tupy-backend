@@ -1,6 +1,8 @@
 # Tupy
 
 ![CI](https://github.com/vdyshlevyi/tupy-backend/actions/workflows/ci.yml/badge.svg)
+[![codecov](https://codecov.io/gh/vdyshlevyi/tupy-backend/branch/main/graph/badge.svg)](https://codecov.io/gh/vdyshlevyi/tupy-backend)
+
 
 
 This repository contains the simple FastAPI app.
