@@ -1,5 +1,8 @@
 # Tupy
 
+![CI](https://github.com/vdyshlevyi/tupy-backend/actions/workflows/ci.yml/badge.svg)
+
+
 This repository contains the simple FastAPI app.
 
 ## Prerequisites
@@ -10,8 +13,13 @@ Before getting started, ensure the following tools are installed:
 * [Docker](https://www.docker.com/)
 
 ---
-
 ## To start development
+### Clone the repository:
+```bash
+git clone https://github.com/vdyshlevyi/tupy-backend
+cd tupy-backend
+```
+
 ### Install requirements via poetry:
 ```bash
 make setup
@@ -20,6 +28,8 @@ make setup
 ### Activate the virtual environment:
 ```bash
 source venv/bin/activate
+# or
+. venv/bin/activate
 ```
 
 ### Copy and fill .env file:
@@ -42,6 +52,16 @@ make lint
 ### Check types:
 ```bash
 make mypy
+```
+
+### Run tests:
+```bash
+make test
+```
+
+### Tests coverage:
+```bash
+make coverage
 ```
 
 ---

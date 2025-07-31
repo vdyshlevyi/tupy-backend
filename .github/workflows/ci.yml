@@ -104,6 +104,7 @@ jobs:
     env:
       VENV_PATH: ${{ github.workspace }}/venv/bin
       POETRY_VIRTUALENVS_PATH: ${{ github.workspace }}/venv
+      SECRET_KEY: "CI_SECRET_KEY"
     steps:
       - uses: actions/checkout@v4
 
