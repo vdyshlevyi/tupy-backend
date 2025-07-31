@@ -128,15 +128,16 @@ jobs:
           COVERAGE_LINE=$(make coverage | grep TOTAL)
           echo "$COVERAGE_LINE"
           PERCENT=$(echo "$COVERAGE_LINE" | awk '{print $NF}' | tr -d '%')
+          echo "Coverage percentage: $PERCENT"
           echo "coverage=$PERCENT" >> "$GITHUB_OUTPUT"
 
-      # - name: View Coverage %
-      #   run: |
-      #     echo "Coverage percentage: ${{ steps.coverage.outputs.coverage }}"
-      #     if [ "${{ steps.coverage.outputs.coverage }}" -lt 80 ]; then
-      #       echo "Coverage is below 80%, failing the job."
-      #       exit 1
-      #     else
-      #       echo "Coverage is above 80%, passing the job."
-      #     fi
+      - name: View Coverage %
+        run: |
+          echo "Coverage percentage: ${{ steps.coverage.outputs.coverage }}"
+          if [ "${{ steps.coverage.outputs.coverage }}" -lt 80 ]; then
+            echo "Coverage is below 80%, failing the job."
+            exit 1
+          else
+            echo "Coverage is above 80%, passing the job."
+          fi
           
