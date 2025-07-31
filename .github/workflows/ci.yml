@@ -124,3 +124,11 @@ jobs:
       - name: Run Test Coverage
         run: |
           make coverage
+
+      - name: Extract Coverage %
+        id: coverage
+        run: |
+          COVERAGE_LINE=$(coverage report | grep TOTAL)
+          echo "$COVERAGE_LINE"
+          PERCENT=$(echo "$COVERAGE_LINE" | awk '{print $NF}' | tr -d '%')
+          echo "coverage=$PERCENT" >> "$GITHUB_OUTPUT"
