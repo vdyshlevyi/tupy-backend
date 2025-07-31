@@ -172,11 +172,18 @@ async def unauthenticated_client(
 
 
 @pytest.fixture(scope="function", autouse=False)
-async def test_client(test_app: FastAPI, test_uow: UnitOfWork) -> AsyncClient:
+async def test_client(
+    test_app: FastAPI, test_uow: UnitOfWork, test_settings: TestSettings
+) -> AsyncClient:
     """Build database and create authenticated test client."""
     hashed_password = get_password_hash("123456")
     user = await UserFactory.create_(uow=test_uow, hashed_password=hashed_password)
-    access_token = generate_access_token(user)
+    access_token = generate_access_token(
+        user,
+        exp_minutes=test_settings.ACCESS_TOKEN_EXP_MINUTES,
+        secret_key=test_settings.SECRET_KEY,
+        algorithm=test_settings.ALGORITHM,
+    )
     headers = {"Authorization": f"Bearer {access_token}"}
     return AsyncClient(
         transport=ASGITransport(app=test_app),

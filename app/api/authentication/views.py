@@ -14,7 +14,9 @@ from app.api.authentication.utils import (
     verify_password,
 )
 from app.api.exceptions import APIValidationError, ConflictError
+from app.config import Settings
 from app.dependencies.db import get_unit_of_work
+from app.dependencies.settings import get_settings
 from app.domain.users import User
 from app.uow.unit_of_work import UnitOfWork
 
@@ -33,6 +35,7 @@ router = APIRouter(prefix="/authentication")
 )
 async def sign_up(
     body: SignUpSchema,
+    settings: Settings = Depends(get_settings),
     uow: UnitOfWork = Depends(get_unit_of_work),
 ) -> dict:
     """Sign up for new users."""
@@ -46,7 +49,12 @@ async def sign_up(
     db_user = await uow.user.create(**body_dict, flush=True)
     await uow.commit()
     await uow.session.refresh(db_user)
-    access_token = generate_access_token(user=db_user)
+    access_token = generate_access_token(
+        user=db_user,
+        exp_minutes=settings.ACCESS_TOKEN_EXP_MINUTES,
+        secret_key=settings.SECRET_KEY,
+        algorithm=settings.ALGORITHM,
+    )
     db_user.access_token = access_token  # type: ignore[attr-defined]
     return db_user
 
@@ -59,6 +67,7 @@ async def sign_up(
 )
 async def login(
     body: LoginSchema,
+    settings: Settings = Depends(get_settings),
     uow: UnitOfWork = Depends(get_unit_of_work),
 ) -> User:
     """Login an existing user."""
@@ -70,7 +79,12 @@ async def login(
         plain_password=body.password,
         hashed_password=db_user.hashed_password,
     ):
-        access_token = generate_access_token(user=db_user)
+        access_token = generate_access_token(
+            user=db_user,
+            exp_minutes=settings.ACCESS_TOKEN_EXP_MINUTES,
+            secret_key=settings.SECRET_KEY,
+            algorithm=settings.ALGORITHM,
+        )
         db_user.access_token = access_token  # type: ignore[attr-defined]
         return db_user
     error = "Unable to login with provided credentials."

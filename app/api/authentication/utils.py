@@ -7,6 +7,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from passlib.context import CryptContext
 
 from app.api.exceptions import UnauthorizedError
+from app.config import Settings
 from app.dependencies.db import get_unit_of_work
 from app.dependencies.settings import get_settings
 from app.domain import User
@@ -18,8 +19,6 @@ logger = getLogger(__name__)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-settings = get_settings()
-
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
@@ -29,19 +28,22 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def generate_access_token(user: User) -> str:
+def generate_access_token(user: User, exp_minutes: int, secret_key: str, algorithm: str) -> str:
     """Generate JWT token for user."""
     payload = {
         "user_id": user.id,
-        "exp": datetime.now(UTC) + timedelta(minutes=settings.ACCESS_TOKEN_EXP_MINUTES),
+        "exp": datetime.now(UTC) + timedelta(minutes=exp_minutes),
         "email": user.email,
         "first_name": user.first_name,
         "last_name": user.last_name,
     }
-    return jwt.encode(payload=payload, key=settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    return jwt.encode(payload=payload, key=secret_key, algorithm=algorithm)
 
 
-async def get_token_payload(token: HTTPAuthorizationCredentials = Depends(auth_schema)) -> dict:
+def get_token_payload(
+    token: HTTPAuthorizationCredentials = Depends(auth_schema),
+    settings: Settings = Depends(get_settings),
+) -> dict:
     """Verify user's access_token."""
     if not token or not token.credentials:
         raise UnauthorizedError
