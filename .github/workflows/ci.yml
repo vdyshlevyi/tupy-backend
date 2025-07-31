@@ -125,8 +125,8 @@ jobs:
         id: coverage
         run: |
           make coverage
-          COVERAGE_LINE=$(make coverage | grep TOTAL)
-          echo "$COVERAGE_LINE"
+          COVERAGE_LINE=$(coverage report | grep TOTAL)
+          echo "Parsed output from coverage is $COVERAGE_LINE"
           PERCENT=$(echo "$COVERAGE_LINE" | awk '{print $NF}' | tr -d '%')
           echo "Coverage percentage: $PERCENT"
           echo "coverage=$PERCENT" >> "$GITHUB_OUTPUT"
