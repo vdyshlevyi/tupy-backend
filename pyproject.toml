@@ -36,6 +36,7 @@ ruff = "^0.12.5"
 types-passlib = "^1.7.7.20250602"
 pytest = "^8.4.1"
 testcontainers = "^4.12.0"
+coverage = "^7.10.1"
 
 
 [tool.ruff]

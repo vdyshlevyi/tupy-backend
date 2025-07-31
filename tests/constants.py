@@ -2,7 +2,7 @@ class Urls:
     HEALTHCHECK = "/healthcheck"
 
     class Auth:
-        SIGNUP = "/api/v1/authentication/signup"
+        SIGN_UP = "/api/v1/authentication/sign-up"
         LOGIN = "/api/v1/authentication/login"
 
     class Common:
