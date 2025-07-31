@@ -10,8 +10,8 @@ def register_routes(fastapi_app: FastAPI):
     """Function to register all API routers in one place."""
     # versions level
     v1_router = APIRouter(prefix="/api/v1")
-    v1_router.include_router(common_router)
     v1_router.include_router(authentication_router)
+    v1_router.include_router(common_router)
     v1_router.include_router(users_router)
 
     # root level
