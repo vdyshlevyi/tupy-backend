@@ -47,7 +47,7 @@ test-integration: ## Run integration tests
 	poetry run pytest $(filter-out $@,$(MAKECMDGOALS)) -s -k "integration"
 
 coverage: ## Run tests coverage
-	. venv/bin/activate; pytest --cov=app tests/
+	. venv/bin/activate; pytest --cov=app tests/ --cov-report=xml
 
 
 # Migration commands
