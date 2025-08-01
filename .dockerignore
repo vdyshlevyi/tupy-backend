@@ -19,3 +19,5 @@ docker-compose.yaml
 .vscode
 .env_example
 Dockerfile
+map-data
+htmlcov

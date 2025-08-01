@@ -1,7 +1,7 @@
 # ========================
 # Stage 1: Build dependencies
 # ========================
-FROM python:3.13-alpine3.20 AS builder
+FROM python:3.13-alpine3.19 AS builder
 
 ENV APP_HOME=/app
 WORKDIR $APP_HOME
@@ -26,7 +26,7 @@ RUN poetry install --no-root --no-interaction --no-ansi
 # ========================
 # Stage 2: Runtime image
 # ========================
-FROM python:3.13-alpine3.20 AS runtime
+FROM python:3.13-alpine3.19 AS runtime
 
 ENV APP_HOME=/app
 WORKDIR $APP_HOME

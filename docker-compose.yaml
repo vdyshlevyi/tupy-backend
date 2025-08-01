@@ -1,12 +1,27 @@
 services:
+  osrm:
+    image: osrm/osrm-backend
+    platform: linux/amd64
+    container_name: osrm
+    ports:
+      - "8000:5000"  # Maps host:8000 → container:5000
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "http://localhost:5000/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - ./map-data:/data
+    command: >
+      osrm-routed --algorithm ch /data/ukraine-latest.osrm
   db:
-    image: postgres:16.4-alpine3.20
+    image: postgres:16.4-alpine3.19
     environment:
       POSTGRES_DB: tupy_backend
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "8000:5432"  # Maps host:8000 → container:5432
+      - "8010:5432"  # Maps host:8010 → container:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -26,7 +41,7 @@ services:
       DEBUG: "true"
       SECRET_KEY: "very_secret_key"
     ports:
-      - "9000:9000"
+      - "8020:9000" # Maps host:8020 → container:9000
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:9000/healthcheck"]
       interval: 10s
