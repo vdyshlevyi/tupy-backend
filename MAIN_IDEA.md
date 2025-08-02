@@ -1,11 +1,11 @@
 ## Users
-### We will 3 roles for users:
+### We have 3 roles for users:
 - Admin
 - Dispatcher
 - Courier
 - Client
 
 #### Admin
-- Can add Dispatcher, Courier to the system
+- Can add Dispatcher/Courier/Client to the system
 - Can see all users
 
