@@ -7,6 +7,8 @@ from app.uow.unit_of_work import UnitOfWork
 from tests.constants import Urls
 from tests.factories import UserFactory
 
+LOGIN_ERROR = "Unable to login with provided credentials."
+
 
 @pytest.mark.anyio
 async def test_login_invalid_credentials(unauthenticated_client: AsyncClient) -> None:
@@ -19,7 +21,7 @@ async def test_login_invalid_credentials(unauthenticated_client: AsyncClient) ->
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     response_json = response.json()
-    assert response_json.get("detail") == "Unable to find user with provided email."
+    assert response_json.get("detail") == LOGIN_ERROR
 
 
 @pytest.mark.anyio
@@ -31,7 +33,7 @@ async def test_login_success(unauthenticated_client: AsyncClient, test_uow: Unit
     response = await unauthenticated_client.post(url=Urls.Auth.LOGIN, json=user_data)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     response_json = response.json()
-    assert response_json.get("detail") == "Unable to login with provided credentials."
+    assert response_json.get("detail") == LOGIN_ERROR
 
     # 2. Send valid credentials
     user_data = {"email": user.email, "password": "123456"}

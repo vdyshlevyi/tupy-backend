@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import (
 from testcontainers.core.generic import DbContainer  # type: ignore[import-untyped]
 from testcontainers.postgres import PostgresContainer  # type: ignore[import-untyped]
 
-from app.api.authentication.utils import generate_access_token, get_password_hash
+from app.api.authentication.utils import generate_access_token
 from app.db.database import DatabaseSessionManager
 from app.dependencies.db import get_unit_of_work
 from app.dependencies.settings import get_settings
@@ -176,8 +176,7 @@ async def test_client(
     test_app: FastAPI, test_uow: UnitOfWork, test_settings: TestSettings
 ) -> AsyncClient:
     """Build database and create authenticated test client."""
-    hashed_password = get_password_hash("123456")
-    user = await UserFactory.create_(uow=test_uow, hashed_password=hashed_password)
+    user = await UserFactory.create_(uow=test_uow)
     access_token = generate_access_token(
         user,
         exp_minutes=test_settings.ACCESS_TOKEN_EXP_MINUTES,
