@@ -5,6 +5,7 @@ from factory.base import StubFactory
 from factory.declarations import LazyFunction
 from faker import Faker
 
+from app.api.authentication.utils import get_password_hash
 from app.domain.users import User
 from app.uow.unit_of_work import UnitOfWork
 
@@ -34,6 +35,9 @@ class BaseFactory(StubFactory):
         for key, value in fields.items():
             if isinstance(value, datetime):
                 fields[key] = value.replace(tzinfo=None)
+
+        if "hashed_password" not in fields:
+            fields["hashed_password"] = get_password_hash("123456")
 
         obj = cls._meta.model(**fields)
         uow.session.add(obj)

@@ -31,3 +31,7 @@ class ForbiddenError(APIValidationError):
 
 class ConflictError(FastAPIHttpError):
     status_code = status.HTTP_409_CONFLICT
+
+
+class NotFoundError(FastAPIHttpError):
+    status_code = status.HTTP_404_NOT_FOUND
