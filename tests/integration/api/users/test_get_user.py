@@ -2,7 +2,6 @@ import pytest
 from httpx import AsyncClient
 from starlette import status
 
-from app.domain.users import User
 from app.uow.unit_of_work import UnitOfWork
 from tests.constants import Urls
 from tests.factories import UserFactory

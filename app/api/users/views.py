@@ -1,4 +1,3 @@
-from collections.abc import Sequence
 from logging import getLogger
 
 from fastapi import APIRouter, Depends
