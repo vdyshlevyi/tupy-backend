@@ -16,7 +16,7 @@ async def main():
         logger.info(f"Admin user with email '{admin_email}' already exists.")
         await gen.aclose()  # close the generator
         return
-    hashed_password = get_password_hash("admin")
+    hashed_password = get_password_hash("123456")
     await uow.user.create(
         email=admin_email,
         first_name="Admin",
