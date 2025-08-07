@@ -28,5 +28,7 @@ class AddUserSchema(BaseSchema):
 class UsersSchema(BaseSchema):
     """Base schema for paginated responses."""
 
-    # total: int = Field(..., description="Total number of items")
+    total: int = Field(..., description="Total number of items")
     items: list[ViewProfileSchema] = Field(..., description="List of items in the current page")
+    page: int = Field(..., description="Current page number")
+    page_size: int = Field(..., description="Number of items per page")

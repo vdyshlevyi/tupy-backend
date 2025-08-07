@@ -1,6 +1,6 @@
 from collections.abc import Sequence
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from app.domain import User
 from app.uow.repository import BaseModelRepository
@@ -11,6 +11,21 @@ class UserRepository(BaseModelRepository):
         query = select(User)
         result = await self.session.execute(query)
         return result.scalars().all()
+    
+    async def get_paginated_all(self, page: int, page_size: int) -> tuple[Sequence[User], int]:
+        """Get paginated list of users."""
+        # Fetch users with pagination parameters
+        offset = (page - 1) * page_size
+        query = select(User).offset(offset).limit(page_size)
+        result = await self.session.execute(query)
+        users = result.scalars().all()
+        
+        # Count total number of users
+        count_query = select(func.count()).select_from(User)
+        total_result = await self.session.execute(count_query)
+        total = total_result.scalar_one()
+        
+        return users, total
 
     async def get_by_id(self, user_id: int) -> User | None:
         query = select(User).filter(User.id == user_id)
