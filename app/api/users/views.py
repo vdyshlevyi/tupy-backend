@@ -1,6 +1,6 @@
 from logging import getLogger
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from starlette import status
 
 from app.api.authentication.utils import get_password_hash, get_request_user
@@ -45,13 +45,17 @@ async def create_user(
     summary="Get all users.",
     status_code=status.HTTP_200_OK,
 )
-async def get_all_users(uow: UnitOfWork = Depends(get_unit_of_work)) -> dict:
+async def get_all_users(
+    uow: UnitOfWork = Depends(get_unit_of_work),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=2, le=100),
+) -> dict:
     """Get all users."""
-    users = await uow.user.get_all()
+    users, total = await uow.user.get_paginated_all(page=page, page_size=page_size)
     if not users:
         error = "No users found."
         raise NotFoundError(error)
-    return {"items": users}
+    return {"items": users, "total": total, "page": page, "page_size": page_size}
 
 
 @router.get(

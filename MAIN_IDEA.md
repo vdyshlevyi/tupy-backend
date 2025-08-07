@@ -6,6 +6,6 @@
 - Client
 
 #### Admin
-- Can add Dispatcher/Courier/Client to the system
+- Can add Admin/Dispatcher/Courier/Client to the system
 - Can see all users
 
