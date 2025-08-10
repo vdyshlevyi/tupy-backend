@@ -12,7 +12,8 @@ from app.uow.unit_of_work import UnitOfWork
 
 logger = getLogger(__name__)
 
-router = APIRouter(prefix="/users", dependencies=[Depends(get_request_user)], tags=["users"])
+router = APIRouter(prefix="/users", dependencies=[], tags=["users"])
+# router = APIRouter(prefix="/users", dependencies=[Depends(get_request_user)], tags=["users"])
 
 
 @router.post(
@@ -35,7 +36,7 @@ async def create_user(
     body_dict["hashed_password"] = get_password_hash(password)
     db_user = await uow.user.create(**body_dict, flush=True)
     await uow.commit()
-    await uow.session.refresh(db_user)
+    await uow.refresh(db_user)
     return db_user
 
 
@@ -59,20 +60,7 @@ async def get_all_users(
 
 
 @router.get(
-    "/profile",
-    response_model=ViewProfileSchema,
-    summary="View user's profile.",
-    status_code=status.HTTP_200_OK,
-)
-async def view_profile(request_user: User = Depends(get_request_user)) -> User:
-    """View user's profile."""
-    logger.info(f"request_user is: {request_user}")
-    # go to Redis and get cached user data
-    return request_user
-
-
-@router.get(
-    "/user/{user_id}",
+    "/{user_id}",
     response_model=ViewProfileSchema,
     summary="View user profile by ID.",
     status_code=status.HTTP_200_OK,
@@ -84,3 +72,22 @@ async def view_user_profile(user_id: int, uow: UnitOfWork = Depends(get_unit_of_
         error = f"User with ID {user_id} does not exist."
         raise NotFoundError(error)
     return user
+
+
+@router.get(
+    "/{user_id}/profile",
+    response_model=ViewProfileSchema,
+    summary="View user's profile.",
+    status_code=status.HTTP_200_OK,
+)
+async def view_profile(
+    user_id: int,
+    request_user: User = Depends(get_request_user),
+) -> User:
+    """View user's profile."""
+    logger.info(f"request_user is: {request_user}")
+    if request_user.id != user_id:
+        error = "You can only view your own profile."
+        raise NotFoundError(error)
+    # go to Redis and get cached user data
+    return request_user

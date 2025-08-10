@@ -606,6 +606,25 @@ all = ["email-validator (>=2.0.0)", "fastapi-cli[standard] (>=0.0.5)", "httpx (>
 standard = ["email-validator (>=2.0.0)", "fastapi-cli[standard] (>=0.0.5)", "httpx (>=0.23.0)", "jinja2 (>=3.1.5)", "python-multipart (>=0.0.18)", "uvicorn[standard] (>=0.12.0)"]
 
 [[package]]
+name = "geoalchemy2"
+version = "0.18.0"
+description = "Using SQLAlchemy with Spatial Databases"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "geoalchemy2-0.18.0-py3-none-any.whl", hash = "sha256:ff0fe7339ba535c50845a2c7e8817a20c164364128991d795733b3c5904b1ee1"},
+    {file = "geoalchemy2-0.18.0.tar.gz", hash = "sha256:9a04690cc33fbc580d15c7c028d9b1b1ea08271489730096c7092e1d486c2b7a"},
+]
+
+[package.dependencies]
+packaging = "*"
+SQLAlchemy = ">=1.4"
+
+[package.extras]
+shapely = ["Shapely (>=1.7)"]
+
+[[package]]
 name = "greenlet"
 version = "3.2.3"
 description = "Lightweight in-process concurrent programming"
@@ -875,7 +894,7 @@ version = "25.0"
 description = "Core utilities for Python packages"
 optional = false
 python-versions = ">=3.8"
-groups = ["dev"]
+groups = ["main", "dev"]
 files = [
     {file = "packaging-25.0-py3-none-any.whl", hash = "sha256:29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484"},
     {file = "packaging-25.0.tar.gz", hash = "sha256:d443872c98d677bf60f6a1f2f8c1cb748e8fe762d2bf9d3148b5599295b0fc4f"},
@@ -1639,4 +1658,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "4d89e5742ad17f6f02e5e792189720b82837ebecac23db2d1faba8c04f3dc110"
+content-hash = "31d8324dacf8b42ca215150466d2c1d9c9fabb0b4334a8a278f1e7b2a7ad4e6f"

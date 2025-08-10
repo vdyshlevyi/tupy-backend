@@ -20,7 +20,7 @@ class TestSettings(Settings):
     POSTGRES_TEMPLATE_DB: str = "template_test_tupy_backend"
     POSTGRES_DB: str = "test_tupy_backend"
     POSTGRES_PORT_EXTERNAL: int | None = None
-    POSTGRES_DOCKER_IMAGE: str = "postgres:16.1-alpine3.19"
+    POSTGRES_DOCKER_IMAGE: str = "postgis/postgis:16-3.4"
 
     model_config = SettingsConfigDict(env_file=Path(__file__).parent / ".testenv")
 

@@ -17,5 +17,5 @@ router = APIRouter(tags=["infrastructure"])
     tags=["infrastructure"],
 )
 async def healthcheck(uow: UnitOfWork = Depends(get_unit_of_work)) -> dict:  # type: ignore[assignment]
-    await uow.session.execute(text("SELECT 1"))
+    await uow.execute(text("SELECT 1"))
     return {"result": "success"}

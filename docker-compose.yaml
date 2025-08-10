@@ -2,40 +2,55 @@ services:
   osrm:
     image: osrm/osrm-backend
     platform: linux/amd64
-    container_name: osrm
+    container_name: tupy_osrm
     ports:
       - "8000:5000"  # Maps host:8000 → container:5000
-    healthcheck:
-      test: [ "CMD", "wget", "--spider", "http://localhost:5000/health" ]
-      interval: 10s
-      timeout: 5s
-      retries: 3
+    # healthcheck:
+    #   test: [ "CMD", "wget", "--spider", "http://localhost:5000/health" ]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 3
     volumes:
       - ./map-data:/data
     command: >
       osrm-routed --algorithm ch /data/ukraine-latest.osrm
+    networks:
+      - app-network
   db:
-    image: postgres:16.4-alpine3.19
+    image: postgis/postgis:16-3.4
+    platform: linux/amd64
+    container_name: tupy_postgres_db
+    restart: unless-stopped
     environment:
       POSTGRES_DB: tupy_backend
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-      - "8010:5432"  # Maps host:8010 → container:5432
+      - "6543:5432" # Changed port to avoid conflict with host PostgreSQL
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d tupy_backend"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     networks:
       - app-network
 
   api:
     build: .
+    container_name: tupy_api
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       POSTGRES_DB: tupy_backend
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      DATABASE_URI: "postgresql+asyncpg://postgres:postgres@db:5432/tupy_backend"
+      DATABASE_URI: "postgresql+asyncpg://postgres:postgres@db:5432/tupy_backend" # use container port, not host-mapped
       HOST: 0.0.0.0
       PORT: 9000
       DEBUG: "true"
@@ -48,6 +63,7 @@ services:
       timeout: 10s
       start_period: 10s
       retries: 3
+    restart: unless-stopped
     networks:
       - app-network
 
