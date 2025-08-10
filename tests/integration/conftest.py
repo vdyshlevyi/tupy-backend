@@ -29,6 +29,8 @@ DROP_TABLE_SQL = """DROP TABLE IF EXISTS {name} CASCADE;"""
 SET_IS_TEMPLATE_SQL = """ALTER DATABASE {name} WITH is_template = true;"""
 DROP_DATABASE_SQL = """DROP DATABASE IF EXISTS {name};"""
 COPY_DATABASE_SQL = """CREATE DATABASE {name} TEMPLATE {template};"""
+INSTALL_POSTGIS_SQL = """CREATE EXTENSION IF NOT EXISTS postgis;"""
+INSTALL_POSTGIS_TOPOLOGY_SQL = """CREATE EXTENSION IF NOT EXISTS postgis_topology;"""
 
 
 ####################################################################################################
@@ -149,6 +151,15 @@ async def _copy_database(test_app, test_settings: TestSettings) -> None:
         )
         await conn.execute(text(raw_sql))
     await engine.dispose()
+
+    # Connect to the new database to install PostGIS extensions
+    new_db_engine = create_async_engine(url=test_settings.DATABASE_URI, echo=False)
+    async with new_db_engine.begin() as conn:
+        # Install PostGIS extensions
+        await conn.execute(text(INSTALL_POSTGIS_SQL))
+        await conn.execute(text(INSTALL_POSTGIS_TOPOLOGY_SQL))
+
+    await new_db_engine.dispose()
 
     test_app.extra["db_session_manager"] = DatabaseSessionManager(test_settings.DATABASE_URI)
 
