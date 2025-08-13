@@ -23,7 +23,5 @@ async def test_get_user_profile(
         algorithm=test_settings.ALGORITHM,
     )
     headers = {"Authorization": f"Bearer {access_token}"}
-    response = await unauthenticated_client.get(
-        url=Urls.Users.PROFILE.format(user_id=user.id), headers=headers
-    )
+    response = await unauthenticated_client.get(url=Urls.Auth.PROFILE, headers=headers)
     assert response.status_code == status.HTTP_200_OK, response.text

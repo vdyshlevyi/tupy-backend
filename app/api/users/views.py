@@ -3,7 +3,7 @@ from logging import getLogger
 from fastapi import APIRouter, Depends, Query
 from starlette import status
 
-from app.api.authentication.utils import get_password_hash, get_request_user
+from app.api.authentication.utils import get_password_hash
 from app.api.exceptions import ConflictError, NotFoundError
 from app.api.users.schemas import AddUserSchema, UsersSchema, ViewProfileSchema
 from app.dependencies.db import get_unit_of_work
@@ -72,22 +72,3 @@ async def view_user_profile(user_id: int, uow: UnitOfWork = Depends(get_unit_of_
         error = f"User with ID {user_id} does not exist."
         raise NotFoundError(error)
     return user
-
-
-@router.get(
-    "/{user_id}/profile",
-    response_model=ViewProfileSchema,
-    summary="View user's profile.",
-    status_code=status.HTTP_200_OK,
-)
-async def view_profile(
-    user_id: int,
-    request_user: User = Depends(get_request_user),
-) -> User:
-    """View user's profile."""
-    logger.info(f"request_user is: {request_user}")
-    if request_user.id != user_id:
-        error = "You can only view your own profile."
-        raise NotFoundError(error)
-    # go to Redis and get cached user data
-    return request_user
